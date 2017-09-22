@@ -1,0 +1,5 @@
+lib/*
+dist/*
+docs/dist/*
+node_modules/*
+bower_components/*
