@@ -107,6 +107,11 @@ export class FormElement extends React.Component {
           }
         }
       }
+      if (fns.length <= 0) {
+        this.props.onErrMsg([name, null]);
+        resolve && resolve({ [name]: v });
+        return;
+      }
       Promise.all(fns)
         .then(
           value => {
@@ -132,9 +137,9 @@ export class FormElement extends React.Component {
     this._validate(null, null);
   }
   render(){
-    return <div>
+    return (<div>
       {this.props.children}
-    </div>;
+    </div>);
   }
 }
 

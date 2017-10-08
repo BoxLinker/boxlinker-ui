@@ -1,4 +1,5 @@
 module.exports = {
+  parser: 'babel-eslint',  
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
@@ -7,6 +8,14 @@ module.exports = {
       jsx: true,
     },
   },
+  extends: [
+    'airbnb',
+    'plugin:flowtype/recommended',
+    'plugin:css-modules/recommended',
+    'prettier',
+    'prettier/flowtype',
+    'prettier/react',
+  ],
   env: {
     browser: true,
     es6: true,
