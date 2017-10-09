@@ -8,9 +8,4 @@ BUI.Select = Select;
 
 export default BUI;
 
-export {
-  Select,
-  Form,
-  FormElement,
-  Grid,
-};
+export { Select, Form, FormElement, Grid };

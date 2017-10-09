@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
+  "private": true,
+  "engines": {
+    "node": ">=6.5",
+    "npm": ">=3.10"
+  },
   "babel": {
     "presets": [
       [
@@ -32,9 +37,22 @@
     ]
   },
   "scripts": {
+    "lint-js": "eslint ./src *.js --cache",
+    "lint-css": "stylelint \"src/**/*.{css,less,scss,sss,pcss}\"",
+    "lint": "yarn run lint-js && yarn run lint-css",
+    "fix-js": "yarn run lint-js -- --fix",
+    "fix-css": "yarn run lint-css -- --fix",
+    "fix": "yarn run fix-js && yarn run fix-css",
     "build": "nps build",
     "start": "webpack-dev-server --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": ["eslint ./src *.js --cache", "git add ."],
+    "*.{css,less,scss,sss}": [
+      "stylelint \"src/**/*.{css,less,scss,sss,pcss}\"",
+      "git add ."
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -55,7 +73,17 @@
     "css-loader": "^0.28.7",
     "eslint": "^4.6.1",
     "eslint-plugin-react": "^7.3.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-import-resolver-node": "^0.3.1",
+    "eslint-loader": "^1.8.0",
+    "eslint-plugin-css-modules": "^2.7.1",
+    "eslint-plugin-flowtype": "^2.34.1",
+    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-prettier": "^2.1.2",
     "extract-text-webpack-plugin": "^3.0.0",
+    "prettier": "^1.5.2",
     "file-loader": "^0.11.2",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
