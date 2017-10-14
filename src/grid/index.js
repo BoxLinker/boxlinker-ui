@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isFunction } from 'lodash';
+import { isFunction, isObject, isArray } from 'lodash';
 
 const DEFAULT_PAGE_COUNT = 10;
-
+/* eslint-disable no-debugger */
 export default class Grid extends React.Component {
   static propTypes = {
     columns: PropTypes.arrayOf(
       PropTypes.shape({
-        field: PropTypes.string,
+        field: PropTypes.string.isRequired,
         label: PropTypes.string,
         minWidth: PropTypes.bool,
         width: PropTypes.number,
         render: PropTypes.func,
-      }),
+      }).isRequired,
     ).isRequired,
     data: PropTypes.shape({
       data: PropTypes.arrayOf(PropTypes.object),
@@ -23,6 +23,7 @@ export default class Grid extends React.Component {
         totalCount: PropTypes.number,
       }),
     }),
+    onLoad: PropTypes.func,
   };
   static defaultProps = {
     data: [],
@@ -31,6 +32,15 @@ export default class Grid extends React.Component {
       pageCount: -1,
       totalCount: -1,
     },
+    onLoad: () => {},
+  };
+  onLoadPage = ({ target: { dataset } }) => {
+    const { currentPage } = dataset;
+    const { pageCount } = this.props.data.pagination;
+    this.props.onLoad({
+      currentPage,
+      pageCount,
+    });
   };
   getHead() {
     const { columns } = this.props;
@@ -67,19 +77,27 @@ export default class Grid extends React.Component {
     columns.forEach(colume => {
       columesMap[colume.field] = colume;
     });
-    return results.map((item, key) => {
-      const tds = [];
-      columns.forEach(colume => {
-        const value = item[colume.field];
-        const comp = isFunction(colume.render) ? colume.render(value) : value;
-        tds.push(<td key={colume.field}>{comp}</td>);
+    return results.map(item => {
+      const tds = columns.map(column => {
+        let value = item[column.field];
+        if ((isObject(value) || isArray(value)) && !isFunction(column.render)) {
+          value = JSON.stringify(value);
+        }
+        return (
+          <td key={column.field}>
+            {isFunction(column.render) ? column.render(value, item) : value}
+          </td>
+        );
       });
-      return <tr key={key}>{tds}</tr>;
+      return <tr key={item.name}>{tds}</tr>;
     });
   }
   getPagination() {
     /* eslint-disable no-script-url */
     const { data } = this.props;
+    if (!data || !data.pagination) {
+      return null;
+    }
     const { currentPage, pageCount, totalCount } = data.pagination;
     let pPageCount = pageCount;
     if (pPageCount <= 0) {
@@ -87,35 +105,46 @@ export default class Grid extends React.Component {
     }
     const pageNum = Math.ceil(totalCount / pPageCount);
     const pages = [];
+    const isFirstPage = currentPage === 1;
+    const isLastPage = currentPage >= pageNum;
     for (let i = 0; i < pageNum; i += 1) {
       pages.push(
         <li
           key={i}
           className={`page-number ${i + 1 === currentPage ? 'active' : ''}`}
         >
-          <a href="javascript:void(0)">{i + 1}</a>
+          <a
+            href="javascript:void(0)"
+            data-current-page={i + 1}
+            onClick={this.onLoadPage}
+          >
+            {i + 1}
+          </a>
         </li>,
       );
     }
     return (
       <div className="clearfix">
-        <span className="pull-left">
-          共{totalCount},
-          {(currentPage - 1) * pPageCount + 1} -
-          {currentPage * pPageCount + 1}
+        <span className="pull-left" style={{ margin: '20px 0' }}>
+          共 {totalCount} 条,&nbsp; 当前 {(currentPage - 1) * pPageCount + 1} -
+          {currentPage * pPageCount} 条
         </span>
         <ul className="pagination pull-right">
-          <li className="page-pre">
-            <a href="javascript:void(0)">
-              <i className="fa fa-arrow-left" />
-            </a>
-          </li>
+          {!isFirstPage ? (
+            <li className="page-pre">
+              <a href="javascript:void(0)">
+                <i className="fa fa-angle-left" />
+              </a>
+            </li>
+          ) : null}
           {pages}
-          <li className="page-next">
-            <a href="javascript:void(0)">
-              <i className="fa fa-arrow-right" />
-            </a>
-          </li>
+          {!isLastPage ? (
+            <li className="page-next">
+              <a href="javascript:void(0)">
+                <i className="fa fa-angle-right" />
+              </a>
+            </li>
+          ) : null}
         </ul>
       </div>
     );
@@ -127,6 +156,7 @@ export default class Grid extends React.Component {
           <thead>{this.getHead()}</thead>
           <tbody>{this.getBody()}</tbody>
         </table>
+        {this.getPagination()}
       </div>
     );
   }

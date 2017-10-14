@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 const isDebug = true;
 const staticAssetName = isDebug
   ? '[path][name].[ext]?[hash:8]'
@@ -10,52 +11,54 @@ const staticAssetName = isDebug
 module.exports = {
   context: path.resolve(__dirname, 'docs/src'),
   entry: {
-    app: './app.js'
+    app: './app.js',
   },
   output: {
     path: path.resolve(__dirname, 'docs/dist'),
     filename: '[name].js',
-    publicPath: '/'
+    publicPath: '/',
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'docs/src'),
-    port: 8000
+    port: 8000,
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: [/node_modules/],
-        use: [{
-          loader: 'babel-loader',
-          options: { presets: ['es2015'] },
-        }],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: { presets: ['es2015', 'stage-0', 'react'] },
+          },
+        ],
       },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           use: ['css-loader'],
-        })
+        }),
       },
       {
         test: /\.less$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: ['css-loader', 'less-loader'],
-        })
+        }),
       },
       {
         test: /\.html$/,
         use: [
           {
-            loader: 'html-loader'
-          }
-        ]
+            loader: 'html-loader',
+          },
+        ],
       },
       {
         test: [/\.(eot|ttf|svg|woff|woff2)$/],
         loader: 'url-loader',
-      }
+      },
     ],
   },
   plugins: [
@@ -70,5 +73,5 @@ module.exports = {
       template: path.resolve(__dirname, 'docs/src/index.html'),
     }),
     new ExtractTextPlugin('docs.css?[hash:8]'),
-  ]
+  ],
 };
