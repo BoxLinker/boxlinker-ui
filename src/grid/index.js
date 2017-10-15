@@ -123,11 +123,16 @@ export default class Grid extends React.Component {
         </li>,
       );
     }
+    const startIndex = (currentPage - 1) * pPageCount + 1;
+    let endIndex = currentPage * pPageCount;
+    if (endIndex > totalCount) {
+      endIndex = totalCount;
+    }
     return (
       <div className="clearfix">
         <span className="pull-left" style={{ margin: '20px 0' }}>
-          共 {totalCount} 条,&nbsp; 当前 {(currentPage - 1) * pPageCount + 1} -
-          {currentPage * pPageCount} 条
+          共&nbsp;{totalCount}&nbsp;条,&nbsp;&nbsp;当前&nbsp;{startIndex}&nbsp;-&nbsp;
+          {endIndex} 条
         </span>
         <ul className="pagination pull-right">
           {!isFirstPage ? (
