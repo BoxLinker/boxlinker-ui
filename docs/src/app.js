@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Select, Form, FormElement } from '../../src/index';
-import { GridDemo } from './comps';
+import { GridDemo, ModalDemo } from './comps';
 import './docs.less';
 /* eslint-disable react/sort-comp,no-underscore-dangle,no-console,react/no-multi-comp,class-methods-use-this */
 
@@ -245,15 +245,22 @@ class FormDemo extends React.Component {
 
 FormDemo.propTypes = {};
 
-ReactDOM.render(
-  <div>
-    <Demo />
-    <hr />
-    <Selection />
-    <hr />
-    <FormDemo />
-    <hr />
-    <GridDemo />
-  </div>,
-  document.getElementById('app'),
-);
+class Page extends React.Component {
+  render() {
+    return (
+      <div>
+        <Demo />
+        <hr />
+        <Selection />
+        <hr />
+        <FormDemo />
+        <hr />
+        <GridDemo />
+        <hr />
+        <ModalDemo />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Page />, document.getElementById('app'));
