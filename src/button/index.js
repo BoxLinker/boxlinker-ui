@@ -3,29 +3,30 @@ import PropTypes from 'prop-types';
 
 class Button extends React.Component {
   static propTypes = {
-    type: PropTypes.string,
+    theme: PropTypes.string,
     size: PropTypes.string,
     loading: PropTypes.bool,
+    block: PropTypes.bool,
     children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     loadingIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-    onClick: PropTypes.func,
   };
   static defaultProps = {
-    type: 'primary',
+    theme: 'default',
+    block: false,
     size: '',
     loadingIcon: 'Loading...',
     loading: false,
     children: 'Button',
-    onClick: () => {},
   };
   render() {
-    const { loading, loadingIcon, type, size } = this.props;
+    const { loading, loadingIcon, theme, size, block, ...props } = this.props;
     let sSize = `${size?`btn-${size}`:''}`;
+    const blockCls = `${block?'btn-block':''}`;
     if (loading) {
-      return <button className={`btn btn-${type} ${sSize}`} disabled>{loadingIcon}</button>
+      return <button {...props} className={`btn btn-${theme} ${sSize} ${blockCls}`} disabled>{loadingIcon}</button>
     }
     return (
-      <button className={`btn btn-${type} ${sSize}`} onClick={this.props.onClick}>{this.props.children}</button>
+      <button {...props} className={`btn btn-${theme} ${sSize} ${blockCls}`}>{this.props.children}</button>
     );
   }
 }
