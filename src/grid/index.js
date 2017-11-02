@@ -15,6 +15,7 @@ export default class Grid extends React.Component {
         render: PropTypes.func,
       }).isRequired,
     ).isRequired,
+    rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     data: PropTypes.shape({
       data: PropTypes.arrayOf(PropTypes.object),
       pagination: PropTypes.shape({
@@ -89,7 +90,13 @@ export default class Grid extends React.Component {
           </td>
         );
       });
-      return <tr key={item.name}>{tds}</tr>;
+      let rowKey = this.props.rowKey;
+      if (isFunction(rowKey)) {
+        rowKey = rowKey(item);
+      } else {
+        rowKey = item[rowKey];
+      }
+      return <tr key={rowKey}>{tds}</tr>;
     });
   }
   getPagination() {
@@ -123,18 +130,21 @@ export default class Grid extends React.Component {
         </li>,
       );
     }
-    const startIndex = (currentPage - 1) * pPageCount + 1;
-    let endIndex = currentPage * pPageCount;
-    if (endIndex > totalCount) {
-      endIndex = totalCount;
-    }
+    // const startIndex = (currentPage - 1) * pPageCount + 1;
+    // let endIndex = currentPage * pPageCount;
+    // if (endIndex > totalCount) {
+    //   endIndex = totalCount;
+    // }
+    // TODO 添加选择 pageCount 的 select
     return (
-      <div className="clearfix">
-        <span className="pull-left" style={{ margin: '20px 0' }}>
-          共&nbsp;{totalCount}&nbsp;条,&nbsp;&nbsp;当前&nbsp;{startIndex}&nbsp;-&nbsp;
-          {endIndex} 条
+      <div
+        className="clearfix"
+        style={{ textAlign: 'right', padding: '0 50px' }}
+      >
+        <span className="pagination-info">
+          共&nbsp;{totalCount}&nbsp;条&nbsp;&nbsp;
         </span>
-        <ul className="pagination pull-right">
+        <ul className="pagination">
           {!isFirstPage ? (
             <li className="page-pre">
               <a href="javascript:void(0)">
