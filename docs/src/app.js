@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Select, Form, FormElement } from '../../src/index';
-import { GridDemo } from './comps';
+import { GridDemo, ButtonDemo } from './comps';
 import './docs.less';
 /* eslint-disable react/sort-comp,no-underscore-dangle,no-console,react/no-multi-comp,class-methods-use-this */
 
@@ -247,6 +247,8 @@ FormDemo.propTypes = {};
 
 ReactDOM.render(
   <div>
+    <ButtonDemo />
+    <hr />
     <Demo />
     <hr />
     <Selection />
