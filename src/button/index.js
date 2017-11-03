@@ -7,7 +7,7 @@ class Button extends React.Component {
     size: PropTypes.string,
     loading: PropTypes.bool,
     block: PropTypes.bool,
-    children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    children: PropTypes.any,
     loadingIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   };
   static defaultProps = {
